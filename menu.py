@@ -1,5 +1,6 @@
 import nuke
 from nodes.studiotools_asset import create_studiotools_asset_node
+from nodes.studiotools_publish import create_studiotools_publish_node
 
 nuke.menu("Nodes").addCommand(
     "StudioTools/StudioTools Asset",
@@ -10,11 +11,5 @@ nuke.menu("Nodes").addCommand(
 nuke.menu("Nodes").addCommand(
     "StudioTools/StudioTools Publish",
     "create_studiotools_publish_node()",
-    icon="Write.png"
-)
-
-nuke.menu("Nodes").addCommand(
-    "StudioTools/StudioTools Publish 3D",
-    "create_studiotools_publish_3D_node()",
     icon="Write.png"
 )

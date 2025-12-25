@@ -80,3 +80,36 @@ def update_version_enum(node):
         return
     
     node["asset_version"].setValues(menu)
+
+def get_next_version_from_asset_root(asset_root):
+    asset_name = os.path.basename(asset_root)
+    
+    versions = list_asset_versions(asset_root)
+    
+    versions = [
+        v for v in versions
+        if v.startswith(f"{asset_name}_v")
+    ]
+
+    if not versions:
+        return version_int_to_string(1)
+
+    newest = versions[-1]  # e.g. asset_v003
+    
+    version_str = newest.split("_v")[-1]
+    version_int = int(version_str)
+
+    return version_int_to_string(version_int + 1)
+
+def get_asset_root_from_name(asset_name):
+    script_path = nuke.root().name()
+    if not script_path or script_path == "Root":
+        return None
+
+    script_dir = os.path.dirname(script_path)
+
+    asset_root_dir = os.path.normpath(
+        os.path.join(script_dir, "..", "..")
+    )
+
+    return os.path.join(asset_root_dir, asset_name)

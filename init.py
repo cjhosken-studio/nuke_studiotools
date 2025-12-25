@@ -20,7 +20,7 @@ def install_package(package_name, import_name=None):
     cmd = [python_exe, "-m", "pip", "install", package_name]
     subprocess.check_call(cmd)
 
-packages = [("numpy"), ("PyYAML", "yaml")]
+packages = [("numpy", "numpy"), ("PyYAML", "yaml")]
 
 for p in packages:
     if len(p) > 1:
@@ -36,5 +36,6 @@ from nodes.studiotools_asset import (
 
 from nodes.studiotools_publish import (
     create_studiotools_publish_node,
-    studiotools_publish_knob_changed
+    studiotools_publish_knob_changed,
+    studiotools_asset_publish
 )
