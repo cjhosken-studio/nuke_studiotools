@@ -39,3 +39,5 @@ from nodes.studiotools_publish import (
     studiotools_publish_knob_changed,
     studiotools_asset_publish
 )
+
+nuke.pluginAddPath(os.path.join(os.path.dirname(__file__), "plugins", "mmColorTarget_v3.1"))
