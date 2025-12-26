@@ -113,3 +113,31 @@ def get_asset_root_from_name(asset_name):
     )
 
     return os.path.join(asset_root_dir, asset_name)
+
+
+def get_latest_version():
+    filepath = nuke.root().name()
+
+    if not filepath:
+        return 0
+    
+    wip_folder = os.path.dirname(os.path.dirname(filepath))
+    version_pattern = re.compile(r'_v(\d+)$', re.IGNORECASE)
+    
+    max_version = 0
+    
+    for app_folder in os.listdir(wip_folder):
+        app_folder_path = os.path.join(wip_folder, app_folder)
+        
+        if not os.path.isdir(app_folder_path):
+            continue
+        
+        for app in os.listdir(os.path.join(wip_folder, app_folder)):
+            name, ext = os.path.splitext(app)
+            match = version_pattern.search(name)
+            if match:
+                ver = int(match.group(1))
+                if ver > max_version:
+                    max_version = ver
+            
+    return max_version

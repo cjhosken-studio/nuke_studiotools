@@ -13,6 +13,9 @@ def create_studiotools_asset_node():
         read = nuke.nodes.Read(name="ImageRead")
         
         read["raw"].setValue(1)
+        read["on_error"].setValue("black")
+        read["before"].setValue("black")
+        read["after"].setValue("black")
         
         geo = nuke.nodes.GeoImport(name="USDGeometry")
         
@@ -55,21 +58,20 @@ def set_studiotools_asset_paths(node):
     
     label = node['asset_version'].value()
     
-    if "Latest" in label:
+    if "Newest" in label:
         version = ""
     
     if label == "Published":
         asset_root = os.path.join(base_path, "published", asset_name)
     else:
-        if "Latest" in label:
-            version = label.replace("Latest (", "").replace(")", "")
+        if "Newest" in label:
+            version = label.replace(f"Newest ({asset_name}_", "").replace(")", "")
         else:
             version = label
             
         asset_root = os.path.join(base_path, "versions", f"{asset_name}_{version}")
-        
-    print(asset_root)
-        
+
+
     if not os.path.exists(asset_root):
         return
             
@@ -96,12 +98,8 @@ def set_studiotools_asset_paths(node):
     geo = node.node("USDGeometry")
     switch = node.node("AssetSwitch")
         
-    print(asset_type)
         
     if asset_type == "usd":
-        print("TESTING!!!")
-        print(root)
-        
         if root.endswith(".usdnc"):
             nuke.message(f"StudioTools Asset Error:\n\n The current asset is a .usdnc from Houdini non-commercial. Please update to a Commercial Houdini license to import into Nuke.")
         
@@ -110,8 +108,8 @@ def set_studiotools_asset_paths(node):
         
     elif asset_type == "images":
         first, last = find_frame_range(root)
-        
-        read["file"].setValue(os.path.join(root, "render.####.exr").replace("\\", "/"))
+                
+        read["file"].setValue(root.replace("\\", "/"))
         read["first"].setValue(first)
         read["last"].setValue(last)
         

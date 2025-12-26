@@ -4,7 +4,9 @@ import re
 FRAME_RE = re.compile(r"(.*?)(\d+)(\.[^.]+)$")
 
 
-def find_frame_range(directory):
+def find_frame_range(frames):
+    
+    directory = os.path.dirname(frames)
     frames = []
 
     for fname in os.listdir(directory):

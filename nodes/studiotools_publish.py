@@ -39,7 +39,7 @@ def create_studiotools_publish_node():
     version_knob = nuke.String_Knob("next_version", "")
     version_knob.clearFlag(nuke.STARTLINE)  # <-- same row
     version_knob.setEnabled(False)
-    version_knob.setValue(get_next_version("asset"))
+    version_knob.setValue(version_int_to_string(get_latest_version()))
     grp.addKnob(version_knob)
 
     grp.addKnob(nuke.Text_Knob("divider", ""))
@@ -103,27 +103,15 @@ def studiotools_publish_knob_changed():
         node["last_frame"].setVisible(not is_static)
         node["static_frame"].setVisible(is_static)
     
-    if knob.name() == "asset_name":
-        asset_name = node["asset_name"].value().strip()
-        
-        next_version = get_next_version(asset_name)
+    if knob.name() == "asset_name":        
+        next_version = version_int_to_string(get_latest_version())
         node["next_version"].setValue(next_version)
         
 def get_next_version(asset_name):
     if not asset_name:
         return "v001"
-        
-    asset_root = get_asset_root_from_name(asset_name)
-    current_version = version_string_to_int(os.path.basename(nuke.root().name()).replace("scene_", "").replace(".nk", ""))
-        
-    if not asset_root:
-        return "v001"
 
-    next_version = get_next_version_from_asset_root(asset_root)
-    
-    real_version = max(version_string_to_int(next_version), current_version)
-
-    return version_int_to_string(real_version)
+    return version_int_to_string(get_latest_version())
         
 def get_publish_frames(node):
     if node["frame_mode"].value() == "Static":
@@ -184,8 +172,10 @@ def studiotools_asset_publish(node):
             default_flow_style=False
         )    
     
+    new_version = get_latest_version()
+    
     nuke.scriptSave()  
-    nuke.scriptSaveAs(os.path.join(os.path.dirname(current), f"scene_{version_int_to_string(version_string_to_int(version) + 1)}.nk"))  
+    nuke.scriptSaveAs(os.path.join(os.path.dirname(current), f"scene_{version_int_to_string(new_version + 1)}.nk"))  
     
     node["next_version"].setValue(get_next_version(name))
     
