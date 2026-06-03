@@ -58,8 +58,8 @@ def _resolve_path(node):
     task_path  = os.environ.get("ST_CWD", "")
     render_name = node["render_name"].value().strip() or "comp"
     render_name = re.sub(r"[^a-zA-Z0-9_]", "_", render_name)
-    render_type = node["render_type"].enumName(int(node["render_type"].value()))
-    file_fmt    = node["file_format"].enumName(int(node["file_format"].value()))
+    render_type = node["render_type"].value()
+    file_fmt    = node["file_format"].value()
 
     render_root = os.path.join(task_path, "wip", "nuke", "renders", render_type)
 
@@ -104,7 +104,7 @@ def _do_render():
     out_dir, full_path, version = _resolve_path(node)
     render_name = node["render_name"].value().strip() or "comp"
     render_name = re.sub(r"[^a-zA-Z0-9_]", "_", render_name)
-    file_fmt    = node["file_format"].enumName(int(node["file_format"].value()))
+    file_fmt    = node["file_format"].value()
 
     # Create output directory
     try:
@@ -128,8 +128,7 @@ def _do_render():
             nuke.message("[ST_Write] Internal Write node not found.")
             return
         write["file"].setValue(full_path)
-        fmt_idx = int(node["file_format"].value())
-        fmt_str = _FILE_FORMATS[fmt_idx]
+        fmt_str = node["file_format"].value()
         write["file_type"].setValue(fmt_str)
         cs = node["colorspace"].value().strip()
         if cs:
@@ -163,8 +162,8 @@ def _write_metadata(node, out_dir, full_path, version, first, last):
     script_path = nuke.Root()["name"].value()
 
     render_name = re.sub(r"[^a-zA-Z0-9_]", "_", node["render_name"].value().strip() or "comp")
-    render_type = node["render_type"].enumName(int(node["render_type"].value()))
-    file_fmt    = node["file_format"].enumName(int(node["file_format"].value()))
+    render_type = node["render_type"].value()
+    file_fmt    = node["file_format"].value()
     colorspace  = node["colorspace"].value().strip()
 
     lines = [
